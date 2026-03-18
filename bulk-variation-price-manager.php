@@ -5,10 +5,10 @@
  * Description: Bulk pricing manager for WooCommerce products and variations with spreadsheet-style UI, inline editing, and bulk sale price setter.
  * Version:     1.0.0
  * Author:      Fitore Gashi
- * Author URI:  https://example.com
+ * Author URI:  https://github.com/fitoreg
  * License:     GPL-2.0
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: bvpm
+ * Text Domain: bulk-variation-price-manager
  * Requires at least: 6.0
  * Requires PHP: 8.0
  * WC requires at least: 7.0
@@ -48,7 +48,7 @@ add_action( 'plugins_loaded', 'bvpm_init' );
 function bvpm_woocommerce_missing_notice() {
 	?>
 	<div class="notice notice-error">
-		<p><?php esc_html_e( 'Bulk Variation Price Manager requires WooCommerce to be installed and active.', 'bvpm' ); ?></p>
+		<p><?php esc_html_e( 'Bulk Variation Price Manager requires WooCommerce to be installed and active.', 'bulk-variation-price-manager' ); ?></p>
 	</div>
 	<?php
 }

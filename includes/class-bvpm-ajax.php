@@ -29,7 +29,7 @@ class BVPM_Ajax {
 		check_ajax_referer( 'bvpm_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'bvpm' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'bulk-variation-price-manager' ) ) );
 		}
 	}
 
@@ -39,12 +39,14 @@ class BVPM_Ajax {
 	public function ajax_inline_save() {
 		$this->verify_request();
 
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
 		$product_id = isset( $_POST['product_id'] ) ? intval( $_POST['product_id'] ) : 0;
 		$field      = isset( $_POST['field'] ) ? sanitize_text_field( wp_unslash( $_POST['field'] ) ) : '';
 		$value      = isset( $_POST['value'] ) ? sanitize_text_field( wp_unslash( $_POST['value'] ) ) : '';
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		if ( ! $product_id || ! in_array( $field, array( 'regular_price', 'sale_price' ), true ) ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid parameters.', 'bvpm' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Invalid parameters.', 'bulk-variation-price-manager' ) ) );
 		}
 
 		$result = BVPM_Updater::update_single_price( $product_id, $field, $value );
@@ -53,14 +55,14 @@ class BVPM_Ajax {
 			$product = wc_get_product( $product_id );
 			wp_send_json_success(
 				array(
-					'message'       => __( 'Price updated.', 'bvpm' ),
+					'message'       => __( 'Price updated.', 'bulk-variation-price-manager' ),
 					'regular_price' => $product->get_regular_price(),
 					'sale_price'    => $product->get_sale_price(),
 					'on_sale'       => $product->is_on_sale(),
 				)
 			);
 		} else {
-			wp_send_json_error( array( 'message' => __( 'Failed to update price. Ensure sale price is less than regular price.', 'bvpm' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Failed to update price. Ensure sale price is less than regular price.', 'bulk-variation-price-manager' ) ) );
 		}
 	}
 
@@ -77,12 +79,12 @@ class BVPM_Ajax {
 		$dry_run      = ! empty( $_POST['dry_run'] );
 
 		if ( empty( $product_ids ) || empty( $action ) ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid parameters.', 'bvpm' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Invalid parameters.', 'bulk-variation-price-manager' ) ) );
 		}
 
 		$valid_actions = array( 'sale_percent', 'sale_fixed', 'clear_sale', 'regular_increase', 'regular_decrease' );
 		if ( ! in_array( $action, $valid_actions, true ) ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid action.', 'bvpm' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Invalid action.', 'bulk-variation-price-manager' ) ) );
 		}
 
 		$result = BVPM_Updater::bulk_update( $product_ids, $action, $value, $skip_on_sale, $dry_run );
@@ -90,14 +92,14 @@ class BVPM_Ajax {
 		$message = $dry_run
 			? sprintf(
 				/* translators: 1: updated count, 2: variations count, 3: skipped count */
-				__( 'Preview: %1$d products (%2$d variations) would be updated. %3$d skipped.', 'bvpm' ),
+				__( 'Preview: %1$d products (%2$d variations) would be updated. %3$d skipped.', 'bulk-variation-price-manager' ),
 				$result['updated'],
 				$result['variations_updated'],
 				$result['skipped']
 			)
 			: sprintf(
 				/* translators: 1: updated count, 2: variations count, 3: skipped count */
-				__( 'Updated %1$d products (%2$d variations). Skipped %3$d (already on sale).', 'bvpm' ),
+				__( 'Updated %1$d products (%2$d variations). Skipped %3$d (already on sale).', 'bulk-variation-price-manager' ),
 				$result['updated'],
 				$result['variations_updated'],
 				$result['skipped']
@@ -123,7 +125,7 @@ class BVPM_Ajax {
 		$product_id = isset( $_POST['product_id'] ) ? intval( $_POST['product_id'] ) : 0;
 
 		if ( ! $product_id ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid product ID.', 'bvpm' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Invalid product ID.', 'bulk-variation-price-manager' ) ) );
 		}
 
 		$variations = BVPM_Query::get_variations( $product_id );
@@ -145,7 +147,7 @@ class BVPM_Ajax {
 		$product_id = isset( $_POST['product_id'] ) ? intval( $_POST['product_id'] ) : 0;
 
 		if ( ! $product_id ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid product ID.', 'bvpm' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Invalid product ID.', 'bulk-variation-price-manager' ) ) );
 		}
 
 		$result = BVPM_Updater::clear_sale( $product_id );
@@ -154,14 +156,14 @@ class BVPM_Ajax {
 			$product = wc_get_product( $product_id );
 			wp_send_json_success(
 				array(
-					'message'       => __( 'Sale price cleared.', 'bvpm' ),
+					'message'       => __( 'Sale price cleared.', 'bulk-variation-price-manager' ),
 					'regular_price' => $product->get_regular_price(),
 					'sale_price'    => $product->get_sale_price(),
 					'on_sale'       => $product->is_on_sale(),
 				)
 			);
 		} else {
-			wp_send_json_error( array( 'message' => __( 'Failed to clear sale price.', 'bvpm' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Failed to clear sale price.', 'bulk-variation-price-manager' ) ) );
 		}
 	}
 }

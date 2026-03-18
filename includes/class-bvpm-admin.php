@@ -26,8 +26,8 @@ class BVPM_Admin {
 	public function add_menu() {
 		add_submenu_page(
 			'woocommerce',
-			__( 'Bulk Price Manager', 'bvpm' ),
-			__( 'Bulk Price Manager', 'bvpm' ),
+			__( 'Bulk Price Manager', 'bulk-variation-price-manager' ),
+			__( 'Bulk Price Manager', 'bulk-variation-price-manager' ),
 			'manage_woocommerce',
 			'bvpm-bulk-price-manager',
 			array( $this, 'render_page' )
@@ -66,13 +66,26 @@ class BVPM_Admin {
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
 				'nonce'    => wp_create_nonce( 'bvpm_nonce' ),
 				'i18n'     => array(
-					'confirm_bulk'    => __( 'You are about to update %d products. Continue?', 'bvpm' ),
-					'saving'          => __( 'Saving...', 'bvpm' ),
-					'saved'           => __( 'Saved', 'bvpm' ),
-					'error'           => __( 'Error', 'bvpm' ),
-					'no_selection'    => __( 'Please select at least one product.', 'bvpm' ),
-					'no_action'       => __( 'Please select a bulk action.', 'bvpm' ),
-					'loading'         => __( 'Loading variations...', 'bvpm' ),
+					/* translators: %d: number of products to be updated */
+					'confirm_bulk'      => __( 'You are about to update %d products. Continue?', 'bulk-variation-price-manager' ),
+					'saving'            => __( 'Saving...', 'bulk-variation-price-manager' ),
+					'saved'             => __( 'Saved', 'bulk-variation-price-manager' ),
+					'error'             => __( 'Error', 'bulk-variation-price-manager' ),
+					'no_selection'      => __( 'Please select at least one product.', 'bulk-variation-price-manager' ),
+					'no_action'         => __( 'Please select a bulk action.', 'bulk-variation-price-manager' ),
+					'loading'           => __( 'Loading variations...', 'bulk-variation-price-manager' ),
+					'no_variations'     => __( 'No variations found.', 'bulk-variation-price-manager' ),
+					'clear_sale'        => __( 'Clear Sale', 'bulk-variation-price-manager' ),
+					'apply_to_selected' => __( 'Apply to selected', 'bulk-variation-price-manager' ),
+					'invalid_amount'    => __( 'Please enter a valid amount.', 'bulk-variation-price-manager' ),
+					'yes'               => __( 'Yes', 'bulk-variation-price-manager' ),
+					'no'                => __( 'No', 'bulk-variation-price-manager' ),
+					'variation'         => __( 'Variation', 'bulk-variation-price-manager' ),
+					'sku'               => __( 'SKU', 'bulk-variation-price-manager' ),
+					'regular_price'     => __( 'Regular Price', 'bulk-variation-price-manager' ),
+					'sale_price'        => __( 'Sale Price', 'bulk-variation-price-manager' ),
+					'on_sale'           => __( 'On Sale?', 'bulk-variation-price-manager' ),
+					'actions'           => __( 'Actions', 'bulk-variation-price-manager' ),
 				),
 			)
 		);
@@ -83,10 +96,11 @@ class BVPM_Admin {
 	 */
 	public function render_page() {
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
-			wp_die( esc_html__( 'You do not have permission to access this page.', 'bvpm' ) );
+			wp_die( esc_html__( 'You do not have permission to access this page.', 'bulk-variation-price-manager' ) );
 		}
 
-		// Gather filter values from GET params.
+		// Gather filter values from GET params (read-only display filters on a capability-gated page).
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Display-only filters; no data is modified.
 		$filters = array(
 			'page'         => isset( $_GET['paged'] ) ? intval( $_GET['paged'] ) : 1,
 			'per_page'     => isset( $_GET['per_page'] ) ? intval( $_GET['per_page'] ) : BVPM_Query::DEFAULT_PER_PAGE,
@@ -95,6 +109,7 @@ class BVPM_Admin {
 			'category'     => isset( $_GET['category'] ) ? sanitize_text_field( wp_unslash( $_GET['category'] ) ) : '',
 			'on_sale'      => isset( $_GET['on_sale'] ) ? sanitize_text_field( wp_unslash( $_GET['on_sale'] ) ) : '',
 		);
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		$data       = BVPM_Query::get_products( $filters );
 		$categories = BVPM_Query::get_categories();

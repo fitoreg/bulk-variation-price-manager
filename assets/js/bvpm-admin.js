@@ -141,9 +141,9 @@
 							var $row = $cell.closest('tr');
 							var $badge = $row.find('.bvpm-col-onsale .bvpm-badge');
 							if (data.on_sale) {
-								$badge.removeClass('bvpm-badge-not-sale').addClass('bvpm-badge-on-sale').text('Yes');
+								$badge.removeClass('bvpm-badge-not-sale').addClass('bvpm-badge-on-sale').text(bvpm.i18n.yes);
 							} else {
-								$badge.removeClass('bvpm-badge-on-sale').addClass('bvpm-badge-not-sale').text('No');
+								$badge.removeClass('bvpm-badge-on-sale').addClass('bvpm-badge-not-sale').text(bvpm.i18n.no);
 							}
 
 							// Also update the other price cell in the row.
@@ -210,23 +210,23 @@
 
 		renderVariations: function ($container, variations, parentId) {
 			if (!variations.length) {
-				$container.html('<p>No variations found.</p>');
+				$container.html('<p>' + BVPM.escHtml(bvpm.i18n.no_variations) + '</p>');
 				return;
 			}
 
 			var html = '<table class="bvpm-variations-table">';
 			html += '<thead><tr>';
-			html += '<th>Variation</th>';
-			html += '<th>SKU</th>';
-			html += '<th>Regular Price</th>';
-			html += '<th>Sale Price</th>';
-			html += '<th>On Sale?</th>';
-			html += '<th>Actions</th>';
+			html += '<th>' + BVPM.escHtml(bvpm.i18n.variation) + '</th>';
+			html += '<th>' + BVPM.escHtml(bvpm.i18n.sku) + '</th>';
+			html += '<th>' + BVPM.escHtml(bvpm.i18n.regular_price) + '</th>';
+			html += '<th>' + BVPM.escHtml(bvpm.i18n.sale_price) + '</th>';
+			html += '<th>' + BVPM.escHtml(bvpm.i18n.on_sale) + '</th>';
+			html += '<th>' + BVPM.escHtml(bvpm.i18n.actions) + '</th>';
 			html += '</tr></thead><tbody>';
 
 			$.each(variations, function (i, v) {
 				var onSaleClass = v.on_sale ? 'bvpm-badge-on-sale' : 'bvpm-badge-not-sale';
-				var onSaleText = v.on_sale ? 'Yes' : 'No';
+				var onSaleText = v.on_sale ? bvpm.i18n.yes : bvpm.i18n.no;
 				var regularDisplay = v.regular_price !== '' ? BVPM.formatPrice(v.regular_price) : '—';
 				var saleDisplay = v.sale_price !== '' ? BVPM.formatPrice(v.sale_price) : '—';
 
@@ -236,7 +236,7 @@
 				html += '<td><span class="bvpm-editable" data-product-id="' + v.id + '" data-field="regular_price" data-value="' + BVPM.escAttr(v.regular_price) + '">' + regularDisplay + '</span></td>';
 				html += '<td><span class="bvpm-editable" data-product-id="' + v.id + '" data-field="sale_price" data-value="' + BVPM.escAttr(v.sale_price) + '">' + saleDisplay + '</span></td>';
 				html += '<td><span class="bvpm-badge ' + onSaleClass + '">' + onSaleText + '</span></td>';
-				html += '<td><button type="button" class="button button-small bvpm-clear-sale-btn" data-product-id="' + v.id + '">Clear Sale</button></td>';
+				html += '<td><button type="button" class="button button-small bvpm-clear-sale-btn" data-product-id="' + v.id + '">' + BVPM.escHtml(bvpm.i18n.clear_sale) + '</button></td>';
 				html += '</tr>';
 			});
 
@@ -272,7 +272,7 @@
 
 						// Update on-sale badge.
 						var $badge = $row.find('.bvpm-badge-on-sale, .bvpm-badge-not-sale');
-						$badge.removeClass('bvpm-badge-on-sale').addClass('bvpm-badge-not-sale').text('No');
+						$badge.removeClass('bvpm-badge-on-sale').addClass('bvpm-badge-not-sale').text(bvpm.i18n.no);
 
 						BVPM.showNotice(data.message, 'success');
 
@@ -295,10 +295,10 @@
 						BVPM.showNotice(response.data.message, 'error');
 					}
 
-					$btn.prop('disabled', false).text('Clear Sale');
+					$btn.prop('disabled', false).text(bvpm.i18n.clear_sale);
 				}).fail(function () {
 					BVPM.showNotice(bvpm.i18n.error, 'error');
-					$btn.prop('disabled', false).text('Clear Sale');
+					$btn.prop('disabled', false).text(bvpm.i18n.clear_sale);
 				});
 			});
 		},
@@ -329,7 +329,7 @@
 
 				var value = $('#bvpm-bulk-value').val();
 				if (action !== 'clear_sale' && (!value || parseFloat(value) <= 0)) {
-					alert('Please enter a valid amount.');
+					alert(bvpm.i18n.invalid_amount);
 					return;
 				}
 
@@ -362,7 +362,7 @@
 					dry_run: dryRun,
 				}, function (response) {
 					$('.bvpm-row-loading').removeClass('bvpm-row-loading');
-					$btn.prop('disabled', false).text('Apply to selected');
+					$btn.prop('disabled', false).text(bvpm.i18n.apply_to_selected);
 
 					if (response.success) {
 						BVPM.showNotice(response.data.message, 'success');
@@ -379,7 +379,7 @@
 					}
 				}).fail(function () {
 					$('.bvpm-row-loading').removeClass('bvpm-row-loading');
-					$btn.prop('disabled', false).text('Apply to selected');
+					$btn.prop('disabled', false).text(bvpm.i18n.apply_to_selected);
 					BVPM.showNotice(bvpm.i18n.error, 'error');
 				});
 			});
