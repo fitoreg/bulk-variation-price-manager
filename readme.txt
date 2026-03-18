@@ -2,7 +2,7 @@
 Contributors: fitoregashi
 Tags: woocommerce, bulk pricing, variations, sale price, price manager
 Requires at least: 6.0
-Tested up to: 6.9.4
+Tested up to: 6.9
 Requires PHP: 8.0
 Stable tag: 1.0.0
 License: GPLv2
