@@ -72,11 +72,13 @@ class BVPM_Ajax {
 	public function ajax_bulk_update() {
 		$this->verify_request();
 
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
 		$product_ids  = isset( $_POST['product_ids'] ) ? array_map( 'intval', (array) $_POST['product_ids'] ) : array();
 		$action       = isset( $_POST['bulk_action'] ) ? sanitize_text_field( wp_unslash( $_POST['bulk_action'] ) ) : '';
 		$value        = isset( $_POST['value'] ) ? floatval( $_POST['value'] ) : 0;
 		$skip_on_sale = ! empty( $_POST['skip_on_sale'] );
 		$dry_run      = ! empty( $_POST['dry_run'] );
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		if ( empty( $product_ids ) || empty( $action ) ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid parameters.', 'bulk-variation-price-manager' ) ) );
@@ -122,7 +124,7 @@ class BVPM_Ajax {
 	public function ajax_load_variations() {
 		$this->verify_request();
 
-		$product_id = isset( $_POST['product_id'] ) ? intval( $_POST['product_id'] ) : 0;
+		$product_id = isset( $_POST['product_id'] ) ? intval( $_POST['product_id'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
 
 		if ( ! $product_id ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid product ID.', 'bulk-variation-price-manager' ) ) );
@@ -144,7 +146,7 @@ class BVPM_Ajax {
 	public function ajax_clear_sale() {
 		$this->verify_request();
 
-		$product_id = isset( $_POST['product_id'] ) ? intval( $_POST['product_id'] ) : 0;
+		$product_id = isset( $_POST['product_id'] ) ? intval( $_POST['product_id'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
 
 		if ( ! $product_id ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid product ID.', 'bulk-variation-price-manager' ) ) );
